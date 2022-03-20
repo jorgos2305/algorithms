@@ -71,36 +71,73 @@ class Algorithm:
                 break
     
     @staticmethod
-    def mergesort(array):
-        if len(array) <= 1:
-            return array
-        m = len(array)//2
+    def mergesort(elements:list) -> list:
+        """
+        Implementation of the merge sort algorithm.
+        Algorithm explation:
+        The target of the algorithm is to divide the array of element into two sub-arrays and merge the elements back together already sorted.
+        This is a recursive algorithim.
+        1. Define base case: if the list has only one element or less, the list is already sorted so return it as it is.
+        2. Find the Index of the element in the middle of the list.
+        3. Divide the list into two sub-lists, one starting from the 0 index to index in the middle (exclusive), the other one from the middle to the end of the original list.
+        4. Make recursive calls to the algorithm using the sub-lists just created.
+        5. Merge the elements back together and return the sorted list.
 
-        left = Algorithm.mergesort(array[:m])
-        right = Algorithm.mergesort(array[m:])
-        sorted_arr = Algorithm._merge(left, right)
+        Args:
+            elements (list): a list of objects to sorted
+
+        Returns:
+            list : a new sorted list of the objects stored in the original list
+        """
+        if len(elements) <= 1:  # Base case, if 1 or less elements, return the list as it is
+            return elements
+        m = len(elements) // 2  # This is the index of the element in the middle of the list
+
+        left = Algorithm.mergesort(elements[:m]) # recursive calls using the sublists
+        right = Algorithm.mergesort(elements[m:])
+        
+        sorted_arr = Algorithm._merge(left, right) # merge the elements back together
 
         return sorted_arr
     
     @staticmethod
-    def _merge(left, right):
+    def _merge(left:list, right:list) -> list:
+        """
+        Merge algorithm to combine the elements of two different lists back together into 1 list.
+        This method is supposed to be private and should not be accessed directly over the public interface.
+        Algorithm explanation:
+        1. Loop through both arrays
+        2. compare the elements of the left list to the right list, add the smallest element to the list
+           either left of right (this will sort the list from smallest to largest)
+        3. If the element of the left list is smaller than the element in the right, increase the left index
+        4. If the element of the right list is smaller than the element in the left, increase the right index
+        5. When we break out of the loop, it mean we have reached the end of one of the lists
+           that mean all the remaining elements of one list are larger than the other, so just add all elements to merged
+
+        Args:
+            left (list): list of objects to be merged with right
+            right (list): list of objects to be merhed with left
+
+        Returns:
+            list: sorted list of elements from left and right
+        """
+        # keep track of the indexes
         left_index = 0
         right_index = 0
-        inversion_counter = 0
+        
         merged = list()
-        while left_index < len(left) and right_index < len(right):
-            if left[left_index] <= right[right_index]:
-                merged.append(left[left_index])
+        while left_index < len(left) and right_index < len(right): # loop through the lists
+            if left[left_index] <= right[right_index]:             # compare left elements to right elements
+                merged.append(left[left_index])                    # if left element smaller, add to merged
                 left_index += 1
             else:
-                merged.append(right[right_index])
-                inversion_counter += len(left) - left_index
+                merged.append(right[right_index])                  # if right element larger, add to merged
                 right_index += 1
         
         merged.extend(right[right_index:]) # while doing this I made the mistake of using append(), 
         merged.extend(left[left_index:])   # which appended an empty list to the array thus creating a problem in the while loop
-                                           # because comparison could be made anymore   
-        return merged, inversion_counter
+                                           # because comparison could not be made anymore   
+        return merged
     
     def quick_sort(self, start, end):
         """
