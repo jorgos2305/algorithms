@@ -139,81 +139,111 @@ class Algorithm:
                                            # because comparison could not be made anymore   
         return merged
     
-    def quick_sort(self, start, end):
+    @staticmethod
+    def quick_sort(elements:list) -> None:
         """
-        Implementation of quick sort algorithm.
-        """
-        if end < start:
-            return
+        This method serves as a wrapper, for the _quick_sort method below
 
-        if end - start <= 1: # there are only 2 or 1 elements left to sort
-            if self.elements[start] > self.elements[end]:
-                self.elements[start], self.elements[end] = self.elements[end], self.elements[start]
+        Args:
+            elements (list): list of elements to be sorted
+        """
+    
+    @staticmethod
+    def _quick_sort(elements:list, start:int, end:int) -> None:
+        """
+        Implementation of the quick sort algorithm. The list will be sorted in place.
+        Algorithm explanation:
+        1. Base case: if we only have one element, then just return. How many elements we have in the portion of the list is check via indexes,
+        2. Calculate the partition index
+        3. Make two recursive calls form the start up to the partiton index (exclusive) and from the partition index to the end
+
+        Args:
+            elements (list): list of elements to be sorted
+            start (int): start index of the list
+            end (int): end index of the list
+        """
+
+        if start >= end:
             return
         
-        partition_index = self._partition(start, end)
-        self.quick_sort(start, partition_index-1)
-        self.quick_sort(partition_index+1, end)
+        partition_index = Algorithm._partition(elements, start, end)
+        Algorithm._quick_sort(elements, start, partition_index-1)
+        Algorithm._quick_sort(elements, partition_index+1, end)
 
-    def _partition(self, start, end):
-        pivot = self.elements[start]
+    @staticmethod
+    def _partition(elements:list, start:int, end:int) -> int:
+        """
+        Algoirtihm explanation:
+        1. The first element in the list is going to be the pivot
+        2. The start index for the comparisons is the second element in the list, since the first one is the pivot already
+        3. High index is the endex of the elements greater than the pivot
+
+        Args:
+            elements (list): list of the objects that will be sorted 
+            start (int): start index of the part of the list that is to be sorted
+            end (int): end index of the part of the list that is to be sorted
+
+        Returns:
+            int: partition index, all elements before the parition index are lower than the pivot, all elements after the partition index are greater than the pivot
+        """
+        # pivot is the element which wre are going to used for our comparisons
+        pivot = elements[start]
         low = start + 1
         high = end
 
         # Step 1 - check the elements at each index and compare them to the pivot
         while low < high: # check that the elements at the lower indexes are lower/less than the pivot
-            while self.elements[low] <= pivot and low < high:
+            while elements[low] <= pivot and low < high:
                 low += 1 # as long as the elements from the left are lower/less than the pivot increment the index
-            while self.elements[high] > pivot and low < high:
+            while elements[high] > pivot and low < high:
                 high -= 1 # as long as the elements from the right are higher/more then the pivot decrease the index
-            self.elements[low], self.elements[high] = self.elements[high], self.elements[low] # swap the elements
+            elements[low], elements[high] = elements[high], elements[low] # swap the elements
 
         # Step 2 - after having checked all element check one last time if the element at the low index is greater than the pivot, if it is swap them
-        if self.elements[low] > pivot:
+        if elements[low] > pivot:
             low -=1
         
         # Step 3 - swap the pivot and the element at the low index
-        self.elements[start], self.elements[low] = self.elements[low], self.elements[start]
+        elements[start], elements[low] = elements[low], elements[start]
 
         return low # returns the partition index, so that the smaller sub arrays can be sorted
 
+    @staticmethod
+    def binary_search(elements, to_find):
+        return Algorithm._binary_search(to_find, 0, len(elements))
 
-    def binary_search(self, to_find):
-        return self._binary_search(to_find, 0, self.length)
-
-    def _binary_search(self, to_find, start, end):
+    @staticmethod
+    def _binary_search(elements, to_find, start, end):
         if end - start <= 1:
-            return self.elements[start] == to_find or self.elements[end] == to_find # base case, the array has 2 or less elements, so fo find is either in one of those or is not
+            return elements[start] == to_find or elements[end] == to_find # base case, the array has 2 or less elements, so fo find is either in one of those or is not
         
         middle = start + ((end - start) // 2)
-        if self.elements[middle] == to_find:
+        if elements[middle] == to_find:
             return True
-        elif to_find > self.elements[middle]:
-            return self._binary_search(to_find, middle+1, end)
+        elif to_find > elements[middle]:
+            return Algorithm._binary_search(to_find, middle+1, end)
         else:
-            return self._binary_search(to_find, start, middle-1)
+            return Algorithm._binary_search(to_find, start, middle-1)
     
-    def binary_search_iteration(self, to_find):
+    @staticmethod
+    def binary_search_iteration( to_find):
         low = 0
-        high = self.length - 1
+        high = length - 1
         while low < high:
             middle = (high - low) // 2
-            if self.elements[middle] == to_find:
+            if elements[middle] == to_find:
                 return True
-            if to_find > self.elements[middle]:
+            if to_find > elements[middle]:
                 low = middle + 1
             else:
                 high = middle - 1
         return False
 
-    def __str__(self) -> str:
-        return f"{self.elements}"
-
 if __name__ == '__main__':
     tot_count = 0
-    elements = [2,3,9,2,2]
+    elements = 'Scorpions Rock You Like A Hurricane cover by Sershen Zaritskaya feat Violet Orlandi'.lower().split()
 
     print(elements)
-    s = Algorithm.mergesort(elements)
+    s = Algorithm._quick_sort(elements, 0, len(elements)-1)
     print("----------")
-    print(s)
+    print(elements)
