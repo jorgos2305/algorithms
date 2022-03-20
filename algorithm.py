@@ -226,9 +226,9 @@ class Algorithm:
             return Algorithm._binary_search(to_find, start, middle-1)
     
     @staticmethod
-    def binary_search_iteration( to_find):
+    def binary_search_iteration(elements:list, to_find:object):
         low = 0
-        high = length - 1
+        high = len(elements) - 1
         while low < high:
             middle = (high - low) // 2
             if elements[middle] == to_find:
